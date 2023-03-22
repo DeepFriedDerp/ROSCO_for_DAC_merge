@@ -54,7 +54,7 @@ class FAST_wrapper(object):
                     print('OpenFAST Failed: {}'.format(e))
                     failed = True
                     run_idx = 2
-            except Exception as e:
+            except:
                 print('OpenFAST Failed: {}'.format(e))
                 failed = True
                 run_idx = 2

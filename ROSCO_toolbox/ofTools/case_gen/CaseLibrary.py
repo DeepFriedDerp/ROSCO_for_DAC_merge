@@ -54,7 +54,7 @@ def load_tuning_yaml(tuning_yaml):
     cp_filename = os.path.join(tune_case_dir,path_params['FAST_directory'],path_params['rotor_performance_filename'])
     turbine.load_from_fast(path_params['FAST_InputFile'], \
         os.path.join(tune_case_dir,path_params['FAST_directory']), \
-        rot_source='txt',\
+        dev_branch=True,rot_source='txt',\
         txt_filename=cp_filename)
 
     return turbine, controller, cp_filename
@@ -131,10 +131,6 @@ def power_curve(**wind_case_opts):
 
     if 'U' in wind_case_opts:
         U = wind_case_opts['U']
-        if type(U) != list:
-            U = [U]
-        elif type(U) == np.ndarray:
-            U = U.tolist()
     else: # default
         # Run conditions
         U = np.arange(4,14.5,.5).tolist()
@@ -174,9 +170,6 @@ def simp_step(**wind_case_opts):
         T_step = wind_case_opts['T_step']
     else: #default
         T_step   = 150
-
-    # Wind directory, default is run_dir
-    wind_case_opts['wind_dir'] = wind_case_opts.get('wind_dir',wind_case_opts['run_dir'])
 
     # Step Wind Setup
 
@@ -395,7 +388,7 @@ def sweep_rated_torque(start_group, **control_sweep_opts):
         cp_filename = os.path.join(tune_case_dir,path_params['FAST_directory'],path_params['rotor_performance_filename'])
         turbine.load_from_fast(path_params['FAST_InputFile'], \
             os.path.join(tune_case_dir,path_params['FAST_directory']), \
-            rot_source='txt',\
+            dev_branch=True,rot_source='txt',\
             txt_filename=cp_filename)
 
         controller.tune_controller(turbine)
@@ -432,9 +425,9 @@ def sweep_pitch_act(start_group, **control_sweep_opts):
 def sweep_ipc_gains(start_group, **control_sweep_opts):
     case_inputs_control = {}
 
-    kis = np.linspace(0,1,6).tolist()
+    kis = np.linspace(0,3,6).tolist()
     # kis = [0.,0.6,1.2,1.8,2.4,3.]
-    KIs = [[ki * 6e-9,0.] for ki in kis]
+    KIs = [[ki * 1e-8,0.] for ki in kis]
     case_inputs_control[('DISCON_in','IPC_ControlMode')] = {'vals': [1], 'group': 0}
     # case_inputs_control[('DISCON_in','IPC_KI')] = {'vals': [[0.,0.],[1e-8,0.]], 'group': start_group}
     case_inputs_control[('DISCON_in','IPC_KI')] = {'vals': KIs, 'group': start_group}
@@ -479,7 +472,7 @@ def sweep_ps_percent(start_group, **control_sweep_opts):
 
         # make default controller, turbine objects for ROSCO_toolbox
         turbine             = ROSCO_turbine.Turbine(turbine_params)
-        turbine.load_from_fast( path_params['FAST_InputFile'],path_params['FAST_directory'])
+        turbine.load_from_fast( path_params['FAST_InputFile'],path_params['FAST_directory'], dev_branch=True)
 
         controller          = ROSCO_controller.Controller(controller_params)
 
@@ -504,15 +497,6 @@ def sweep_ps_percent(start_group, **control_sweep_opts):
         return case_inputs_control
 
 
-def test_pitch_offset(start_group, **control_sweep_opts):
-    case_inputs_control = {}
-    case_inputs_control[('DISCON_in','PF_Mode')] = {'vals': [1], 'group': start_group}
-    case_inputs_control[('DISCON_in','PF_Offsets')] = {'vals': [[0,float(np.radians(2)),0]], 'group': start_group}
-    return case_inputs_control
-
-
-
-
 #  def sweep_pc_mode(cont_yaml,omega=np.linspace(.05,.35,8,endpoint=True).tolist(),zeta=[1.5],group=2):
     
     
@@ -523,7 +507,7 @@ def test_pitch_offset(start_group, **control_sweep_opts):
 
 #     # make default controller, turbine objects for ROSCO_toolbox
 #     turbine             = ROSCO_turbine.Turbine(turbine_params)
-#     turbine.load_from_fast( path_params['FAST_InputFile'],path_params['FAST_directory'])
+#     turbine.load_from_fast( path_params['FAST_InputFile'],path_params['FAST_directory'], dev_branch=True)
 
 #     controller          = ROSCO_controller.Controller(controller_params)
 

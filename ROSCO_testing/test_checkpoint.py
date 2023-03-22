@@ -53,7 +53,6 @@ class RegressionTesting(unittest.TestCase):
         case_inputs[('Fst', 'OutFileFmt')] = {'vals': [2], 'group': 1}
         case_inputs[('Fst', 'DT')] = {'vals': [0.025], 'group': 0}
         case_inputs[('DISCON_in', 'LoggingLevel')] = {'vals': [2], 'group': 1}
-        case_inputs[('ElastoDyn', 'RotSpeed')] = {'vals': [7], 'group': 0}
 
         # Generate cases
         run_dir = os.path.join(test_out_dir, 'restart')
@@ -111,7 +110,7 @@ class RegressionTesting(unittest.TestCase):
         if False: # Plotting for debug
             import matplotlib.pyplot as plt
             cases = {}
-            cases['Baseline'] = ['Wind1VelX', 'BldPitch1', 'GenTq', 'RotSpeed', 'NacYaw','GenPwr']
+            cases['Baseline'] = ['Wind1VelX', 'BldPitch1', 'GenTq', 'RotSpeed', 'NacYaw']
             fig, ax = op.plot_fast_out(cases=cases, showplot=False)
             plt.show()
 

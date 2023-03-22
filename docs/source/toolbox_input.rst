@@ -1,7 +1,7 @@
 
 .. toctree::
 
-.. _rt_tuning_yaml: 
+.. _rt_tuning_yaml:
 
 **************************
 ROSCO_Toolbox tuning .yaml
@@ -9,7 +9,7 @@ ROSCO_Toolbox tuning .yaml
 Definition of inputs for ROSCO tuning procedure
 
 
-toolbox_schema
+toolbox_schema.
 
 
 
@@ -226,7 +226,7 @@ controller_params
 
     *Default* = 0
 
-    *Minimum* = 0    *Maximum* = 2
+    *Minimum* = 0    *Maximum* = 4
 
 
 :code:`PwC_Mode` : Float
@@ -254,15 +254,6 @@ controller_params
     *Default* = 0
 
     *Minimum* = 0    *Maximum* = 2
-
-
-:code:`PF_Mode` : Float
-    Pitch fault mode {0 - not used, 1 - constant offset on one or more
-    blades}
-
-    *Default* = 0
-
-    *Minimum* = 0    *Maximum* = 1
 
 
 :code:`Ext_Mode` : Float
@@ -697,10 +688,6 @@ These are pass-through parameters for the DISCON.IN file.  Use with caution.
     Integrator saturation (maximum signal amplitude contribution to
     pitch from IPC)
 
-:code:`IPC_SatMode` : Integer
-    IPC Saturation method (0 - no saturation, 1 - saturate by
-    PC_MinPit, 2 - saturate by PS_BldPitchMin)
-
 :code:`IPC_KP` : Array of Floats
     Proportional gain for the individual pitch controller- first
     parameter for 1P reductions, second for 2P reductions, [-]
@@ -922,9 +909,6 @@ These are pass-through parameters for the DISCON.IN file.  Use with caution.
 
     *Default* = DISCON
 
-:code:`PF_Offsets` : Array of Floats
-    Pitch angle offsets for each blade (array with length of 3)
-
 
 
 linmodel_tuning
@@ -958,4 +942,3 @@ Inputs used for tuning ROSCO using linear (level 2) models
     Desired maximum stability margin
 
     *Default* = 0.1
-

@@ -140,7 +140,7 @@ class Sim():
             gen_torque[i], bld_pitch[i], nac_yawrate[i] = self.controller_int.call_controller(turbine_state)
 
             # Calculate the power
-            gen_power[i] = gen_speed[i] * gen_torque[i] * self.turbine.GenEff / 100
+            gen_power[i] = gen_speed[i] * gen_torque[i]
 
             # Calculate the nacelle position
             nac_yaw[i] = nac_yaw[i-1] + nac_yawrate[i] * dt
@@ -181,7 +181,7 @@ class Sim():
                 ax.grid()
                 ax = axarr[3]
                 ax.plot(self.t_array, self.gen_power/1000)
-                ax.set_ylabel('Gen Power (kW)')
+                ax.set_ylabel('Gen Power (W)')
                 ax.grid()
                 ax = axarr[4]
                 ax.plot(self.t_array, self.bld_pitch*rad2deg)
@@ -304,7 +304,6 @@ class Sim():
 
             # Calculate the power
             gen_power[i] = gen_speed[i] * gen_torque[i]
-            gen_power[i] = gen_speed[i] * gen_torque[i] * self.turbine.GenEff / 100
 
             # Update the nacelle position
             nac_yaw[i] = nac_yaw[i-1] + nac_yawrate[i]*rad2deg*dt

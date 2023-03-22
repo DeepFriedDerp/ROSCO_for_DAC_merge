@@ -44,7 +44,7 @@ IMPLICIT NONE
 !REAL(ReKi), INTENT(IN)      :: from_SC(*)       ! DATA from the super controller
 !REAL(ReKi), INTENT(INOUT)   :: to_SC(*)         ! DATA to the super controller
 
-REAL(ReKi),                  INTENT(INOUT)   :: avrSWAP(*)                       ! The swap array, used to pass data to, and receive data from, the DLL controller.
+REAL(C_FLOAT),                  INTENT(INOUT)   :: avrSWAP(*)                       ! The swap array, used to pass data to, and receive data from, the DLL controller.
 INTEGER(C_INT),                 INTENT(INOUT)   :: aviFAIL                          ! A flag used to indicate the success of this DLL call set as follows: 0 if the DLL call was successful, >0 if the DLL call was successful but cMessage should be issued as a warning messsage, <0 if the DLL call was unsuccessful or for any other reason the simulation is to be stopped at this point with cMessage as the error message.
 CHARACTER(KIND=C_CHAR),         INTENT(IN   )   :: accINFILE(NINT(avrSWAP(50)))     ! The name of the parameter input file
 CHARACTER(KIND=C_CHAR),         INTENT(IN   )   :: avcOUTNAME(NINT(avrSWAP(51)))    ! OUTNAME (Simulation RootName)
@@ -79,7 +79,7 @@ IF ( (NINT(avrSWAP(1)) == -9) .AND. (aviFAIL >= 0))  THEN ! Read restart files
 END IF
 
 ! Read avrSWAP array into derived types/variables
-CALL ReadAvrSWAP(avrSWAP, LocalVar, CntrPar)
+CALL ReadAvrSWAP(avrSWAP, LocalVar)
 
 ! Set Control Parameters
 CALL SetParameters(avrSWAP, accINFILE, SIZE(avcMSG), CntrPar, LocalVar, objInst, PerfData, zmqVar, ErrVar)
@@ -113,8 +113,8 @@ IF (((LocalVar%iStatus >= 0) .OR. (LocalVar%iStatus <= -8)) .AND. (ErrVar%aviFAI
         CALL YawRateControl(avrSWAP, CntrPar, LocalVar, objInst, zmqVar, DebugVar, ErrVar)
     END IF
     
-    IF (CntrPar%Flp_Mode > 0) THEN
-        CALL FlapControl(avrSWAP, CntrPar, LocalVar, objInst)
+    IF (CntrPar%DAC_Mode > 0) THEN
+        CALL DACControl(avrSWAP, CntrPar, LocalVar, objInst)
     END IF
     
     IF ( CntrPar%LoggingLevel > 0 ) THEN

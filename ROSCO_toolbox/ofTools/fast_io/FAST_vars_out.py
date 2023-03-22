@@ -1438,10 +1438,10 @@ ServoDyn['TTMD_XQD']          = False     # (m/s); Tower X TMD velocity; Relativ
 ServoDyn['TTMD_YQ']           = False     # (m); Tower Y TMD position (displacement); Relative to rest position
 ServoDyn['TTMD_YQD']          = False     # (m/s); Tower Y TMD velocity; Relative to tower
 
-# Flap outputs
-ServoDyn['BLFLAP1']          = False     # (m/s); Tower Y TMD velocity; Relative to tower
-ServoDyn['BLFLAP2']          = False     # (m/s); Tower Y TMD velocity; Relative to tower
-ServoDyn['BLFLAP3']          = False     # (m/s); Tower Y TMD velocity; Relative to tower
+# DAC outputs
+ServoDyn['BLFLAP1']          = False     # (units of device) Value of DAC parameter for blade 1 TODO bem: may want to change naming convention to general DAC
+ServoDyn['BLFLAP2']          = False     # (units of device) Value of DAC parameter for blade 2
+ServoDyn['BLFLAP3']          = False     # (units of device) Value of DAC parameter for blade 3
 
 """ AeroDyn """
 AeroDyn = {}
@@ -2543,17 +2543,17 @@ AeroDyn['RtVAvgxh']           = False     # (m/s); Rotor-disk-averaged relative 
 AeroDyn['RtVAvgyh']           = False     # (m/s); Rotor-disk-averaged relative wind velocity (y-component);  the hub coordinate system
 AeroDyn['RtVAvgzh']           = False     # (m/s); Rotor-disk-averaged relative wind velocity (z-component);  the hub coordinate system
 AeroDyn['RtSkew']             = False     # (deg); Rotor inflow-skew angle; 
-AeroDyn['RtFldFxh']          = False     # (N); Total rotor aerodynamic load (force in x direction);  the hub coordinate system
-AeroDyn['RtFldFyh']          = False     # (N); Total rotor aerodynamic load (force in y direction);  the hub coordinate system
-AeroDyn['RtFldFzh']          = False     # (N); Total rotor aerodynamic load (force in z direction);  the hub coordinate system
-AeroDyn['RtFldMxh']          = False     # (N m); Total rotor aerodynamic load (moment in x direction);  the hub coordinate system
-AeroDyn['RtFldMyh']          = False     # (N m); Total rotor aerodynamic load (moment in y direction);  the hub coordinate system
-AeroDyn['RtFldMzh']          = False     # (N m); Total rotor aerodynamic load (moment in z direction);  the hub coordinate system
-AeroDyn['RtFldPwr']          = False     # (W); Rotor aerodynamic power; 
+AeroDyn['RtAeroFxh']          = False     # (N); Total rotor aerodynamic load (force in x direction);  the hub coordinate system
+AeroDyn['RtAeroFyh']          = False     # (N); Total rotor aerodynamic load (force in y direction);  the hub coordinate system
+AeroDyn['RtAeroFzh']          = False     # (N); Total rotor aerodynamic load (force in z direction);  the hub coordinate system
+AeroDyn['RtAeroMxh']          = False     # (N m); Total rotor aerodynamic load (moment in x direction);  the hub coordinate system
+AeroDyn['RtAeroMyh']          = False     # (N m); Total rotor aerodynamic load (moment in y direction);  the hub coordinate system
+AeroDyn['RtAeroMzh']          = False     # (N m); Total rotor aerodynamic load (moment in z direction);  the hub coordinate system
+AeroDyn['RtAeroPwr']          = False     # (W); Rotor aerodynamic power; 
 AeroDyn['RtArea']             = False     # (m^2); Rotor swept area; 
-AeroDyn['RtFldCp']           = False     # (-); Rotor aerodynamic power coefficient; 
-AeroDyn['RtFldCq']           = False     # (-); Rotor aerodynamic torque coefficient; 
-AeroDyn['RtFldCt']           = False     # (-); Rotor aerodynamic thrust coefficient; 
+AeroDyn['RtAeroCp']           = False     # (-); Rotor aerodynamic power coefficient; 
+AeroDyn['RtAeroCq']           = False     # (-); Rotor aerodynamic torque coefficient; 
+AeroDyn['RtAeroCt']           = False     # (-); Rotor aerodynamic thrust coefficient; 
 
 
 """ InflowWind """

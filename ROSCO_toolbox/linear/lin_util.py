@@ -296,10 +296,7 @@ def interp_matrix(x, matrix_3D, q):
 
 
 def _convert_to_ss(sys):
-    if isinstance(sys, (int, float, complex,
-                        np.float64, np.float32,
-                        np.int64, np.int32,
-                        np.complex128, np.complex64)):
+    if isinstance(sys, (int, float, complex, np.float)):
         ss = sp.signal.StateSpace([0], [0], [0], sys)
     else:
         ss = sys
