@@ -4,7 +4,7 @@ Example script to run the DLCs in OpenFAST
 
 """
 
-from ROSCO_toolbox.ofTools.case_gen.runFAST_pywrapper   import runFAST_pywrapper, runFAST_pywrapper_batch
+from ROSCO_toolbox.ofTools.case_gen.runFAST_pywrapper   import runFAST_pywrapper_batch
 from ROSCO_toolbox.ofTools.case_gen.CaseGen_IEC         import CaseGen_IEC
 from ROSCO_toolbox.ofTools.case_gen.CaseGen_General     import CaseGen_General
 from ROSCO_toolbox.ofTools.case_gen import CaseLibrary as cl
@@ -38,6 +38,7 @@ class run_FAST_ROSCO():
         self.n_cores            = 1
         self.base_name          = ''
         self.controller_params  = {}   
+        self.fst_vt             = {}   
 
     def run_FAST(self):
         # set up run directory
@@ -153,7 +154,7 @@ class run_FAST_ROSCO():
             fastBatch.FAST_runDirectory = run_dir
             fastBatch.case_list         = case_list
             fastBatch.case_name_list    = case_name_list
-            fastBatch.debug_level       = 2
+            fastBatch.fst_vt            = self.fst_vt
             fastBatch.FAST_exe          = 'openfast'
 
             if MPI:
