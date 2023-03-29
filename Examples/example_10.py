@@ -34,10 +34,8 @@ controller_params   = inps['controller_params']
 
 # Load turbine data from openfast model
 turbine = ROSCO_turbine.Turbine(turbine_params)
-turbine.load_from_fast(
-    path_params['FAST_InputFile'],
-    os.path.join(this_dir,path_params['FAST_directory'])
-    )
+turbine.load_from_fast(path_params['FAST_InputFile'], \
+    os.path.join(this_dir,path_params['FAST_directory']),dev_branch=True)
 
 # Tune controller
 controller = ROSCO_controller.Controller(controller_params)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(ROSCO VERSION 2.7.0 LANGUAGES Fortran C)
+project(ROSCO VERSION 2.6.0 LANGUAGES Fortran C)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY "${CMAKE_BINARY_DIR}/ftnmods")
 
@@ -109,10 +109,6 @@ install(TARGETS discon
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
 )
-
-set(linuxDefault ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
-set(windowsDefault ${CMAKE_INSTALL_PREFIX} STREQUAL "C:\\Program Files (x86)")
-if(${linuxDefault} OR ${windowsDefault})
-  message("TRUE")
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/install")
 endif()

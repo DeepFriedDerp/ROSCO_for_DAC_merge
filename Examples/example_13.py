@@ -1,5 +1,5 @@
 '''
------------ 12_tune_ipc --------------
+----------- Example_13 --------------
 Load a turbine, tune a controller with IPC
 -------------------------------------
 
@@ -28,8 +28,7 @@ from ROSCO_toolbox.ofTools.case_gen.CaseGen_General     import CaseGen_General
 this_dir          = os.path.dirname(os.path.abspath(__file__))
 rosco_dir         = os.path.dirname(this_dir)
 example_out_dir   = os.path.join(this_dir,'examples_out')
-example_name      = '12_ipc_sim'
-run_dir = os.path.join(example_out_dir, example_name)
+run_dir = os.path.join(example_out_dir, '13_ipc_sim')
 
 # Load yaml file (Open Loop Case)
 parameter_filename = os.path.join(rosco_dir,'Tune_Cases/BAR.yaml')
@@ -48,10 +47,8 @@ turbine         = ROSCO_turbine.Turbine(turbine_params)
 controller      = ROSCO_controller.Controller(controller_params)
 
 # Load turbine data from OpenFAST and rotor performance text file
-turbine.load_from_fast(
-   path_params['FAST_InputFile'],
-   os.path.join(this_dir, path_params['FAST_directory'])
-   )
+turbine.load_from_fast(path_params['FAST_InputFile'],
+                       os.path.join(this_dir, path_params['FAST_directory']), dev_branch=True)
 # Tune controller 
 controller.tune_controller(turbine)
 
@@ -105,7 +102,7 @@ fastBatch.run_serial()
 cases = {}
 cases['Baseline'] = ['Wind1VelX', ('BldPitch1', 'BldPitch2', 'BldPitch3'), 'RootMyc1', 'RotSpeed']
 
-out_file = os.path.join(example_out_dir,example_name,'ipc_example_0.outb')
+out_file = os.path.join(example_out_dir,'13_ipc_sim/ipc_example_0.outb')
 op = output_processing.output_processing()
 fastout = op.load_fast_out(out_file, tmin=0)
 fig, ax = op.plot_fast_out(cases=cases,showplot=False)

@@ -1,5 +1,5 @@
 '''
------------ 15_pass_through --------------
+----------- Example_15 --------------
 Use the runFAST scripts to set up an example, use pass through in yaml
 -------------------------------------
 
@@ -37,7 +37,6 @@ def main():
         'wind_dir': run_dir
         }
     r.save_dir      = run_dir
-    r.rosco_dir     = rosco_dir
 
     r.run_FAST()
 

@@ -12,13 +12,6 @@ default_types:
     size: 0                # Use this if the type IS an array (size:3 --> REAL(8), BldPitch(3))
     allocatable: False
     equals: 
-  float: &float
-    type: float
-    description: 
-    dimension:             # Use this if a higher-dimensional allocatable array (dimension:(:,:) --> REAL(8), DIMESION(:,:), ALLOCATABLE)
-    size: 0                # Use this if the type IS an array (size:3 --> REAL(8), BldPitch(3))
-    allocatable: False
-    equals: 
   character: &character
     type: character
     description: 
@@ -106,9 +99,9 @@ ControlParameters:
     F_YawErr:
       <<: *real
       description: Corner low pass filter corner frequency for yaw controller [rad/s].
-    F_FlpCornerFreq:
+    DACCornerFreq:
       <<: *real
-      description: Corner frequency (-3dB point) in the second order low pass filter of the blade root bending moment for flap control [rad/s].
+      description: Corner frequency (-3dB point) in the second order low pass filter of the blade root bending moment for DAC control [rad/s].
       allocatable: True
     
     # Tower fore-aft damping
@@ -136,9 +129,6 @@ ControlParameters:
     IPC_IntSat:
       <<: *real
       description: Integrator saturation (maximum signal amplitude contrbution to pitch from IPC)
-    IPC_SatMode:
-      <<: *integer
-      description: IPC Saturation method IPC Saturation method (0 - no saturation (except by PC_MinPit), 1 - saturate by PS_BldPitchMin, 2 - saturate sotfly (full IPC cycle) by PC_MinPit, 3 - saturate softly by PS_BldPitchMin)
     IPC_KP:
       <<: *real
       description: Integral gain for the individual pitch controller, [-].
@@ -371,22 +361,34 @@ ControlParameters:
       <<: *real
       description: Nacelle velocity proportional feedback gain [s]
     
-    # Trailing edge flaps
-    Flp_Mode:
+    # Distributed Aerodynamic Control
+    DAC_Mode:
       <<: *integer
-      description: Flap actuator mode {0 - off, 1 - fixed flap position, 2 - PI flap control}
-    Flp_Angle:
+      description: DAC actuator mode {0 - off, 1 - fixed DAC parameter value, 2 - PI DAC control, 3 - Cyclic control, 4 - Bang-Bang control}
+    dac_param: 
       <<: *real
-      description: Fixed flap angle (degrees)
-    Flp_Kp:
+      description: Fixed DAC parameter values (units of DAC device)
+    DAC_Kp:
       <<: *real
-      description: PI flap control proportional gain 
-    Flp_Ki:
+      description: PI DAC control proportional gain 
+    DAC_Ki:
       <<: *real
-      description: PI flap control integral gain 
-    Flp_MaxPit:
+      description: PI DAC control integral gain 
+    dac_maxval: 
       <<: *real
-      description: Maximum (and minimum) flap pitch angle [rad]
+      description: Maximum (and minimum) DAC parameter value [units of DAC parameter]
+    dac_bb_threshold: #Ben: I added these last 4 items
+      <<: *real
+      description: Threshold for flapwise root bending moment for bang-bang dac controller [N-m]
+    dac_bb_startDelay:
+      <<: *real
+      description: Time to begin allowing bang-bang dac controller in simulation [s]
+    dac_bb_depTime:
+      <<: *real
+      description: Time to manually deploy dac devices [s]
+    dac_bb_useIDAC:
+      <<: *integer
+      description: Flag for bang-bang dac control?
     
     # Open-loop Control
     OL_Filename:
@@ -440,16 +442,7 @@ ControlParameters:
     PA_Damping:
       <<: *real
       description: Pitch actuator damping ratio [-, unused if PA_Mode = 1]
-    
-    # Pitch actuator error
-    PF_Mode:
-      <<: *integer
-      description: Pitch actuator fault mode {0 - not used, 1 - offsets on one or more blades}
-    PF_Offsets:
-      <<: *real
-      description: Pitch actuator fault offsets for blade 1-3 [rad/s]
-      allocatable: True
-    
+
     # External Control
     Ext_Mode:
       <<: *integer
@@ -662,12 +655,6 @@ FilterParameters:
       dimension: (99)
       description: Notch filter denominator coefficient 0  
 
-rlParams:
-    LastSignal:
-      <<: *real
-      dimension: (99)
-      description: Last input signal
-
 piParams:
     ITerm:
       <<: *real
@@ -726,9 +713,6 @@ LocalVariables:
       <<: *real
       description: Blade pitch [rad]
       size: 3
-    BlPitchCMeas: 
-      <<: *real
-      description: Mean (collective) blade pitch [rad]
     Azimuth: 
       <<: *real 
       description: Rotor aziumuth angle [rad]
@@ -830,9 +814,6 @@ LocalVariables:
       <<: *real
       description: Proportional gain for IPC, after ramp [-]
       size: 2
-    IPC_IntSat:
-      <<: *real
-      description: Integrator saturation (maximum signal amplitude contrbution to pitch from IPC)
     PC_State:                     
       <<: *integer 
       description: State of the pitch control system
@@ -842,7 +823,7 @@ LocalVariables:
       size: 3
     PitComAct:                  
       <<: *real 
-      description: Actuated pitch command of each blade [rad].
+      description: Actuated pitch of each blade the last time the controller was called [rad].
       size: 3
     SS_DelOmegaF:                 
       <<: *real 
@@ -902,9 +883,9 @@ LocalVariables:
       <<: *real 
     FA_AccF:
       <<: *real 
-    Flp_Angle:
+    dac_param: #TODO bem: need to check capitalization
       <<: *real 
-      description: Flap Angle (rad)
+      description: DAC parameter value (units depend on device)
       size: 3
     RootMyb_Last:
       <<: *real 
@@ -933,10 +914,6 @@ LocalVariables:
       <<: *derived_type
       id: piParams
       description: PI parameters derived type
-    rlP:
-      <<: *derived_type
-      id: rlParams
-      description: Rate limiter parameters derived type
 
 ObjectInstances:
   instLPF:
@@ -957,9 +934,6 @@ ObjectInstances:
   instPI:
     <<: *integer
     description: PI controller instance
-  instRL:
-    <<: *integer
-    description: Rate limiter instance
 
 PerformanceData:
   TSR_vec:
@@ -1044,19 +1018,34 @@ DebugVariables:
   axisYaw_2P:
     <<: *real
     description: Yaw component of coleman transformation, 2P
+  YawRateCom:
+    <<: *real
+    description: Commanded yaw rate [rad/s].
+  NacHeadingTarget:
+    <<: *real
+    description: Target nacelle heading [rad].
+  NacVaneOffset:
+    <<: *real
+    description: Nacelle vane angle with offset [rad].
+  Yaw_err:
+    <<: *real
+    description: Yaw error [rad].
+  YawState:
+    <<: *real
+    description: State of yaw controller
 
   YawRateCom:
     <<: *real
     description: Commanded yaw rate [rad/s].
   NacHeadingTarget:
     <<: *real
-    description: Target nacelle heading [deg].
+    description: Target nacelle heading [rad].
   NacVaneOffset:
     <<: *real
-    description: Nacelle vane angle with offset [deg].
-  Yaw_Err:
+    description: Nacelle vane angle with offset [rad].
+  Yaw_err:
     <<: *real
-    description: Yaw error [deg].
+    description: Yaw error [rad].
   YawState:
     <<: *real
     description: State of yaw controller
@@ -1109,7 +1098,7 @@ ZMQ_Variables:
     
 ExtControlType:
   avrSWAP:
-    <<: *float
+    <<: *c_float
     description: The swap array- used to pass data to and from the DLL controller [see Bladed DLL documentation]
     allocatable: True
     dimension: (:)

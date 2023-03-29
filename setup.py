@@ -33,10 +33,10 @@ from io import open
 NAME = 'rosco'
 DESCRIPTION = 'A reference open source controller toolset for wind turbine applications.'
 URL = 'https://github.com/NREL/ROSCO'
-EMAIL = 'daniel.zalkind@nrel.gov'
+EMAIL = 'nikhar.abbas@nrel.gov'
 AUTHOR = 'NREL, National Wind Technology Center'
-REQUIRES_PYTHON = '>=3.8'
-VERSION = '2.7.0'
+REQUIRES_PYTHON = '>=3.4'
+VERSION = '2.6.0'
 
 # These packages are required for all of the code to be executed. 
 # - Maybe you can get away with older versions...
